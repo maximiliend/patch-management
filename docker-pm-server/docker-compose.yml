@@ -1,0 +1,7 @@
+pm_server:
+    image: pm_server
+    volumes:
+        - "/srv/pm_server/data/conf:/srv/conf"
+    ports:
+        - "80:80"
+    restart: always
