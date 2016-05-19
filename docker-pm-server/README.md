@@ -7,12 +7,9 @@ Files
 ```
 .
 ├── build
-│  ├── docker-entrypoint.sh
-│  ├── Dockerfile
-│  └── server.py
-├── data
-│  └── conf
-│      └── canUpgrade
+│   ├── docker-entrypoint.sh
+│   ├── Dockerfile
+│   └── server.py
 └── docker-compose.yml
 ```
 
