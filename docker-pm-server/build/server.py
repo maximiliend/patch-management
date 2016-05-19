@@ -24,7 +24,7 @@ for sig in [signal.SIGTERM, signal.SIGINT, signal.SIGHUP, signal.SIGQUIT]:
     signal.signal(sig, handler)
 
 HOST = ''
-PORT = 80
+PORT = 23
 
 log = open("/var/log/pm_server.log", "a")
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

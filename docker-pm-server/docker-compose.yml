@@ -4,5 +4,5 @@ pm_server:
     volumes:
         - "/etc/pm_server:/srv/conf"
     ports:
-        - "80:80"
+        - "23:23"
     restart: always
