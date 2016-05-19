@@ -61,3 +61,9 @@ Examples of cron that can be used :
 # Force upgrades every monday of even week at 8am
 0 8 * * 1 [ $(expr `date +%U` % 2) -eq 0 ] && /usr/local/bin/securityUpdate.sh -f >/dev/null 2>&1
 ```
+
+
+PM Server
+-------------
+
+A simple pm server is available in docker-pm-server/
