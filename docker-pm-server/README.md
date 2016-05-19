@@ -43,8 +43,8 @@ Enable or Disable Upgrades
 
 ```
 # Enable :
-echo 1 > data/conf/canUpgrade
+echo 1 > /etc/pm_server/canUpgrade
 
 # Disable
-echo 0 > data/conf/canUpgrade
+echo 0 > /etc/pm_server/canUpgrade
 ```

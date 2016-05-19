@@ -2,7 +2,7 @@ pm_server:
     container_name: pm_server
     image: pm_server
     volumes:
-        - "/srv/pm_server/data/conf:/srv/conf"
+        - "/etc/pm_server:/srv/conf"
     ports:
         - "80:80"
     restart: always
