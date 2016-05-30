@@ -5,13 +5,11 @@
 # Functions #
 #############
 
-verb () {
+log () {
     if [[ $VERBOSE -eq 1 ]]; then
         echo -e "$@"
     fi
-}
 
-log () {
     date +"[%d-%m-%Y %H:%M:%S] $@" >> $LOGFILE
 }
 
@@ -44,19 +42,19 @@ check_pm () {
 
     if [[ $retpm =~ ^-?[0-9]+$ ]] && [ "$retpm" -eq 0 ]
     then
-        verb "> Server $PM_HOST advice to don't apply upgrades"
+        log "> Server $PM_HOST advice to don't apply upgrades"
         ret=0
     else
-        verb "> Server $PM_HOST advice to apply upgrade or is unreachable"
+        log "> Server $PM_HOST advice to apply upgrade or is unreachable"
     fi
 
     return $ret
 }
 
 update () {
-    verb "> Execute Update && upgrade --download-only"
+    log "> Execute Update && Download-Only"
 
-    if [ "$operatingsystem" = "debian" ]
+    if [ "$DistroBase" = "Debian" ]
     then
         log "Update and download only packages"
         apt-get update && apt-get upgrade -y --download-only
@@ -65,10 +63,10 @@ update () {
 
 upgrade () {
 
-    verb "> Execute Security Upgrade"
+    log "> Execute Security Upgrade"
     # Execute Security Upgrade
 
-    if [ "$operatingsystem" = "debian" ]
+    if [ "$DistroBase" = "Debian" ]
     then
 
         upgrade_list_full=$(DEBIAN_FRONTEND=noninteractive apt-get upgrade -s | grep -i -e '^Inst.*Security' | awk -F ' ' '{print $2}' )
@@ -81,11 +79,10 @@ upgrade () {
         fi
 
         log "Security Upgrade - Install packages : $upgrade_list"
-        verb "Security Upgrade - Install packages : $upgrade_list"
 
         DEBIAN_FRONTEND=noninteractive apt-get install -q -y --only-upgrade -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" $upgrade_list
 
-    elif [ "$operatingsystem" = "centos" ]
+    elif [ "$DistroBase" = "RedHat" ]
     then
         # Need to install yum-security before and update-minimal
         # Check if yum-security is installed
@@ -98,11 +95,9 @@ upgrade () {
         fi
 
         log "Security Upgrade - Install security packages"
-        verb "Security Upgrade - Install security packages"
         yum update-minimal --security -y
     else
         log "Security Upgrade - Unsupported Operating System"
-        verb "Security Upgrade - Unsupported Operating System"
     fi
 
 }
@@ -122,7 +117,15 @@ VERBOSE=0
 IGNORE_PACKAGES_PARAM=''
 IGNORE_PACKAGES=''
 
-operatingsystem=$(facter operatingsystem | tr '[:upper:]' '[:lower:]')
+OS=$(uname)
+
+if [ "${OS}" = "Linux" ] ; then
+    if [ -f /etc/debian_version ] ; then
+        DistroBase='Debian'
+    elif [ -f /etc/redhat-release ] ; then
+        DistroBase='RedHat'
+    fi
+fi
 
 
 # Retrive parameters
@@ -182,9 +185,9 @@ fi
 # Core #
 ########
 
-verb "Security Patch Management Tool. Verbose mode.\n"
+log "Security Patch Management Tool. Verbose mode.\n"
 
-verb "Run :\n"
+log "Run :\n"
 
 if [ "$UPDATE" -eq 1 ]
 then
@@ -206,7 +209,6 @@ then
         then
             upgrade
         else
-            verb "> We are following $PM_HOST advice's ..."
             log "Server $PM_HOST advice to don't apply upgrades. Don't do anything"
         fi
     else
