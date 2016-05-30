@@ -12,8 +12,8 @@ Security Upgrades
 Script **securityUpdate.sh**
 
 Compliant with :
-- Debian
-- CentOS (Minor features)
+- Debian based distribution (Ubuntu, ...)
+- RedHat based distribution (CentOS, ...) (Minor features)
 
 > Installation
 ```

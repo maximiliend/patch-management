@@ -56,7 +56,7 @@ check_pm () {
 update () {
     verb "> Execute Update && upgrade --download-only"
 
-    if [ "$operatingsystem" = "debian" ]
+    if [ "$DistroBase" = "Debian" ]
     then
         log "Update and download only packages"
         apt-get update && apt-get upgrade -y --download-only
@@ -68,7 +68,7 @@ upgrade () {
     verb "> Execute Security Upgrade"
     # Execute Security Upgrade
 
-    if [ "$operatingsystem" = "debian" ]
+    if [ "$DistroBase" = "Debian" ]
     then
 
         upgrade_list_full=$(DEBIAN_FRONTEND=noninteractive apt-get upgrade -s | grep -i -e '^Inst.*Security' | awk -F ' ' '{print $2}' )
@@ -85,7 +85,7 @@ upgrade () {
 
         DEBIAN_FRONTEND=noninteractive apt-get install -q -y --only-upgrade -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" $upgrade_list
 
-    elif [ "$operatingsystem" = "centos" ]
+    elif [ "$DistroBase" = "RedHat" ]
     then
         # Need to install yum-security before and update-minimal
         # Check if yum-security is installed
@@ -122,7 +122,15 @@ VERBOSE=0
 IGNORE_PACKAGES_PARAM=''
 IGNORE_PACKAGES=''
 
-operatingsystem=$(facter operatingsystem | tr '[:upper:]' '[:lower:]')
+OS=$(uname)
+
+if [ "${OS}" = "Linux" ] ; then
+    if [ -f /etc/debian_version ] ; then
+        DistroBase='Debian'
+    elif [ -f /etc/redhat-release ] ; then
+        DistroBase='RedHat'
+    fi
+fi
 
 
 # Retrive parameters
