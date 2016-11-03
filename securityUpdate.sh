@@ -27,7 +27,7 @@ OPTIONS:
     -s      Safe Security Upgrade (ask host server before, need to define --host and --port)
     -i      Ignore package during upgrade whose name contains one of this param, separated with ',' or '|' or ' '. Example : "mysql,apache"
     -l      Log file (Default : /var/log/securityUpgrades.log)
-    -r      Host asked for sage upgrade
+    -r      Host asked for safe upgrade
     -p      Remote host's port
 EOF
 }
