@@ -194,7 +194,9 @@ then
 
     update
 
-elif [ "$FORCE_UPGRADE" -eq 1 ]
+fi
+
+if [ "$FORCE_UPGRADE" -eq 1 ]
 then
 
     upgrade
@@ -215,8 +217,11 @@ then
         echo "Error : you should define host (-r) and port (-p) to use safe upgrade"
     fi
 
-else
+elif [ "$UPDATE" -ne 1 ]
+then
+
     usage
+
 fi
 
 exit 0

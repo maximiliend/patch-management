@@ -59,7 +59,7 @@ Examples of cron that can be used :
 # Force upgrades with ignored packages every day 6am
 0 6 * * * /usr/local/bin/securityUpdate.sh -f -i mysql,postgresql >/dev/null 2>&1
 # Force upgrades every monday of even week at 8am
-0 8 * * 1 [ $(expr `date +%U` % 2) -eq 0 ] && /usr/local/bin/securityUpdate.sh -f >/dev/null 2>&1
+0 8 * * 1 [ $(expr `date +\%U` \% 2) -eq 0 ] && /usr/local/bin/securityUpdate.sh -f >/dev/null 2>&1
 ```
 
 
