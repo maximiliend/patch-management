@@ -51,13 +51,37 @@ check_pm () {
     return $ret
 }
 
+get_upgrade_list_apt () {
+
+    upgrade_list_full=$(DEBIAN_FRONTEND=noninteractive apt-get upgrade -s | grep -i -e '^Inst.*Security' | awk -F ' ' '{print $2}' )
+
+    if [ -n "$IGNORE_PACKAGES" ]
+    then
+        UPGRADE_LIST=$(echo "$upgrade_list_full" | grep -Evi "$IGNORE_PACKAGES" | tr '\n' ' ' )
+    else
+        UPGRADE_LIST=$(echo "$upgrade_list_full" | tr '\n' ' ' )
+    fi
+
+}
+
 update () {
+
     log "> Execute Update && Download-Only"
 
     if [ "$DistroBase" = "Debian" ]
     then
         log "Update and download only packages"
-        apt-get update && apt-get upgrade -y --download-only
+
+        apt-get update
+        
+        get_upgrade_list_apt
+
+        if [ -n "${UPGRADE_LIST/[ ]*/}" ]
+        then
+
+            apt-get upgrade -y --download-only $UPGRADE_LIST
+
+        fi
     fi
 }
 
@@ -69,18 +93,14 @@ upgrade () {
     if [ "$DistroBase" = "Debian" ]
     then
 
-        upgrade_list_full=$(DEBIAN_FRONTEND=noninteractive apt-get upgrade -s | grep -i -e '^Inst.*Security' | awk -F ' ' '{print $2}' )
-
-        if [ -n "$IGNORE_PACKAGES" ]
+        if [ -z "$UPGRADE_LIST" ]
         then
-            upgrade_list=$(echo "$upgrade_list_full" | grep -Evi "$IGNORE_PACKAGES" | tr '\n' ' ' )
-        else
-            upgrade_list=$(echo "$upgrade_list_full" | tr '\n' ' ' )
+            get_upgrade_list_apt
         fi
 
-        log "Security Upgrade - Install packages : $upgrade_list"
+        log "Security Upgrade - Install packages : $UPGRADE_LIST"
 
-        DEBIAN_FRONTEND=noninteractive apt-get install -q -y --only-upgrade -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" $upgrade_list
+        DEBIAN_FRONTEND=noninteractive apt-get install -q -y --only-upgrade -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" $UPGRADE_LIST
 
     elif [ "$DistroBase" = "RedHat" ]
     then
@@ -116,6 +136,8 @@ SAFE_UPGRADE=0
 VERBOSE=0
 IGNORE_PACKAGES_PARAM=''
 IGNORE_PACKAGES=''
+
+UPGRADE_LIST=''
 
 OS=$(uname)
 
