@@ -60,6 +60,8 @@ Examples of cron that can be used :
 0 6 * * * /usr/local/bin/securityUpdate.sh -f -i mysql,postgresql >/dev/null 2>&1
 # Force upgrades every monday of even week at 8am
 0 8 * * 1 [ $(expr `date +\%U` \% 2) -eq 0 ] && /usr/local/bin/securityUpdate.sh -f >/dev/null 2>&1
+# Update and Upgrade every monday at 6:30am
+30 6 * * 1 /usr/local/bin/securityUpdate.sh -u -f >/dev/null 2>&1
 ```
 
 
