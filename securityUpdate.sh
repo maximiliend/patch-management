@@ -207,9 +207,16 @@ fi
 # Core #
 ########
 
-log "Security Patch Management Tool. Verbose mode.\n"
+# Make sure only root can execute this script
+if [ "$(id -u)" != "0" ]
+then
+	echo -e "\n[Error] This script must be run as root !\n" 1>&2
+	exit 1
+fi
 
-log "Run :\n"
+log "Security Patch Management Tool. Verbose mode."
+
+log "Run :"
 
 if [ "$UPDATE" -eq 1 ]
 then
