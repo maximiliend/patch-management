@@ -10,7 +10,7 @@ log () {
         echo -e "$@"
     fi
 
-    date +"[%d-%m-%Y %H:%M:%S] $@" >> $LOGFILE
+    date +"[%d-%m-%Y %H:%M:%S] $@" >> "$LOGFILE"
 }
 
 usage() {
@@ -38,7 +38,7 @@ check_pm () {
     # We ask $PM_HOST if we can launch security upgrade
     # If 0 we don't launch security upgrades
     # If pm is unreachable we don't take into consideration the pm server
-    retpm=$(sleep 1 | telnet $PM_HOST $PM_PORT | tail -n 1)
+    retpm=$(sleep 1 | telnet "$PM_HOST" "$PM_PORT" | tail -n 1)
 
     if [[ $retpm =~ ^-?[0-9]+$ ]] && [ "$retpm" -eq 0 ]
     then
@@ -73,13 +73,13 @@ update () {
         log "Update and download only packages"
 
         apt-get update
-        
+
         get_upgrade_list_apt
 
         if [ -n "${UPGRADE_LIST/[ ]*/}" ]
         then
 
-            apt-get upgrade -y --download-only $UPGRADE_LIST
+            apt-get upgrade -y --download-only "$UPGRADE_LIST"
 
         fi
     fi
@@ -100,7 +100,7 @@ upgrade () {
 
         log "Security Upgrade - Install packages : $UPGRADE_LIST"
 
-        DEBIAN_FRONTEND=noninteractive apt-get install -q -y --only-upgrade -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" $UPGRADE_LIST
+        DEBIAN_FRONTEND=noninteractive apt-get install -q -y --only-upgrade -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" "$UPGRADE_LIST"
 
     elif [ "$DistroBase" = "RedHat" ]
     then
@@ -150,7 +150,7 @@ if [ "${OS}" = "Linux" ] ; then
 fi
 
 
-# Retrive parameters
+# Retrieve parameters
 
 while getopts "hufsvi:r:p:l:" OPTION
 do
@@ -197,7 +197,7 @@ fi
 
 # Ignore package
 
-if [ -n $IGNORE_PACKAGE_PARAM ]
+if [ -n "$IGNORE_PACKAGES_PARAM" ]
 then
     IGNORE_PACKAGES=$(echo "$IGNORE_PACKAGES_PARAM" | sed 's/[, ]/\|/g')
 fi
